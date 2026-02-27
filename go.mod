@@ -6,6 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.12
 	github.com/gofiber/swagger v1.1.1
 	github.com/joho/godotenv v1.5.1
+	github.com/sirupsen/logrus v1.9.4
 	github.com/swaggo/swag v1.16.6
 )
 
