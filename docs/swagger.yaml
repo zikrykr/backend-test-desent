@@ -1,0 +1,38 @@
+basePath: /
+definitions:
+  model.Health:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
+paths:
+  /api/health:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Health'
+      summary: Check Health
+      tags:
+      - health
+swagger: "2.0"
