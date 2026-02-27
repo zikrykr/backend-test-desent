@@ -7,10 +7,14 @@ import (
 	"github.com/zikrykr/backend-test-desent/app"
 )
 
-var Handler http.HandlerFunc
+var fiberHandler http.HandlerFunc
 
 func init() {
 	fiberApp := app.SetupApp()
 
-	Handler = adaptor.FiberApp(fiberApp)
+	fiberHandler = adaptor.FiberApp(fiberApp)
+}
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+	fiberHandler(w, r)
 }
