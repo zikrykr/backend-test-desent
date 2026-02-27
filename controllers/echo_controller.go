@@ -28,10 +28,10 @@ func NewEchoController(healthService services.HealthServiceInterface) EchoContro
 func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 	reqBody := ctx.Body()
 
-	var data map[string]any
-	if err := utils.UnmarshalJSON(reqBody, &data); err != nil {
+	var resp any
+	if err := utils.UnmarshalJSON(reqBody, &resp); err != nil {
 		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body", err)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(data)
+	return ctx.Status(fiber.StatusOK).JSON(resp)
 }
