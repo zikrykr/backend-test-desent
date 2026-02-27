@@ -36,5 +36,6 @@ func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body to valid JSON", err)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(resp)
+	ctx.Set("Content-Type", "application/json")
+	return ctx.Status(fiber.StatusOK).Send(resp)
 }
