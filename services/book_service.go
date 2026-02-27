@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/zikrykr/backend-test-desent/infrastructure"
 	"github.com/zikrykr/backend-test-desent/model"
+	"github.com/zikrykr/backend-test-desent/utils"
 )
 
 type bookService struct {
@@ -46,10 +47,9 @@ func (s *bookService) FindByID(id string) (*model.Book, error) {
 		return nil, fmt.Errorf("book not found")
 	}
 
-	if b, ok := book.(*model.Book); ok {
+	b, err := utils.ConvertToPtr[model.Book](book)
+	if err == nil {
 		return b, nil
-	} else if bookVal, ok := book.(model.Book); ok {
-		return &bookVal, nil
 	}
 
 	s.logger.Info("Book found: " + id)
@@ -64,13 +64,43 @@ func (s *bookService) FindAll() ([]*model.Book, error) {
 	}
 
 	for _, book := range books.([]any) {
-		if b, ok := book.(*model.Book); ok {
+		if b, err := utils.ConvertToPtr[model.Book](book); err == nil {
 			bookResult = append(bookResult, b)
-		} else if b, ok := book.(model.Book); ok {
-			bookResult = append(bookResult, &b)
 		}
 	}
 
 	s.logger.Info("Books found")
 	return bookResult, nil
+}
+
+func (s *bookService) Update(id string, req *model.UpdateBookRequest) (*model.Book, error) {
+	cacheKey := fmt.Sprintf("books:%s", id)
+
+	book, found := s.cache.Get(cacheKey)
+	if !found {
+		return nil, fmt.Errorf("book not found")
+	}
+
+	b, err := utils.ConvertToPtr[model.Book](book)
+	if err != nil {
+		return nil, fmt.Errorf("book not found")
+	}
+
+	b.Title = req.Title
+	b.Author = req.Author
+	b.Year = req.Year
+
+	s.cache.Set(cacheKey, b, 0)
+
+	s.logger.Info("Book updated: " + id)
+	return b, nil
+}
+
+func (s *bookService) Delete(id string) error {
+	cacheKey := fmt.Sprintf("books:%s", id)
+
+	s.cache.Delete(cacheKey)
+
+	s.logger.Info("Book deleted: " + id)
+	return nil
 }

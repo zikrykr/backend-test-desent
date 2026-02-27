@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/zikrykr/backend-test-desent/app"
 	"github.com/zikrykr/backend-test-desent/config"
 )
@@ -17,6 +18,8 @@ import (
 // @BasePath /
 func main() {
 	fiberApp := app.SetupApp()
+
+	fiberApp.Use(recover.New())
 
 	port := config.GetEnv("PORT", "3000")
 	appHost := config.GetEnv("APP_HOST", "localhost")

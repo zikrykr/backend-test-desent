@@ -35,6 +35,8 @@ func SetupRoutes(config RouteConfig) {
 	books.Post("/", bookController.Create)
 	books.Get("/", bookController.FindAll)
 	books.Get("/:id", bookController.FindByID)
+	books.Put("/:id", bookController.Update)
+	books.Delete("/:id", bookController.Delete)
 
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World! Welcome to the Fiber backend.")

@@ -12,4 +12,6 @@ type BookServiceInterface interface {
 	Create(book *model.CreateBookRequest) (*model.Book, error)
 	FindByID(id string) (*model.Book, error)
 	FindAll() ([]*model.Book, error)
+	Update(id string, book *model.UpdateBookRequest) (*model.Book, error)
+	Delete(id string) error
 }

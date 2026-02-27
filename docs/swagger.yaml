@@ -28,6 +28,15 @@ definitions:
       success:
         type: boolean
     type: object
+  model.UpdateBookRequest:
+    properties:
+      author:
+        type: string
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
 info:
   contact: {}
   description: This is a swagger for Backend Test Desent
@@ -73,6 +82,26 @@ paths:
       tags:
       - book
   /api/books/{id}:
+    delete:
+      consumes:
+      - '*/*'
+      description: delete a book.
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Book'
+      summary: Delete
+      tags:
+      - book
     get:
       consumes:
       - '*/*'
@@ -91,6 +120,32 @@ paths:
           schema:
             $ref: '#/definitions/model.Book'
       summary: FindByID
+      tags:
+      - book
+    put:
+      consumes:
+      - application/json
+      description: update a book.
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Book'
+      summary: Update
       tags:
       - book
   /api/echo:

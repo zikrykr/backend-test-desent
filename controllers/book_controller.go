@@ -85,3 +85,55 @@ func (c *BookController) FindAll(ctx *fiber.Ctx) error {
 
 	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
 }
+
+// Update returns a simple update response.
+// @Summary Update
+// @Description update a book.
+// @Tags book
+// @Accept json
+// @Produce json
+// @Param id path string true "Book ID"
+// @Param body body model.UpdateBookRequest true "Request body"
+// @Success 200 {object} model.Book
+// @Router /api/books/{id} [put]
+func (c *BookController) Update(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	if id == "" {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "book id cannot be empty", nil)
+	}
+
+	var req model.UpdateBookRequest
+	if err := ctx.BodyParser(&req); err != nil {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "failed to parse request body to valid JSON", err)
+	}
+
+	bookResult, err := c.BookService.Update(id, &req)
+	if err != nil {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to update book", err)
+	}
+
+	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
+}
+
+// Delete returns a simple delete response.
+// @Summary Delete
+// @Description delete a book.
+// @Tags book
+// @Accept */*
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 200 {object} model.Book
+// @Router /api/books/{id} [delete]
+func (c *BookController) Delete(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	if id == "" {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "book id cannot be empty", nil)
+	}
+
+	err := c.BookService.Delete(id)
+	if err != nil {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to delete book", err)
+	}
+
+	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, nil)
+}
