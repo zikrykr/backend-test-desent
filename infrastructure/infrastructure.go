@@ -1,5 +1,6 @@
 package infrastructure
 
 type Infrastructure struct {
-	Cache *Cache
+	Cache  *Cache
+	Logger *Logger
 }

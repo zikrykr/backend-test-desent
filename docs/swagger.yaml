@@ -1,5 +1,25 @@
 basePath: /
 definitions:
+  model.Book:
+    properties:
+      author:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
+  model.CreateBookRequest:
+    properties:
+      author:
+        type: string
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
   model.Response:
     properties:
       data: {}
@@ -14,10 +34,32 @@ info:
   title: Backend Test Desent API
   version: "1.0"
 paths:
+  /api/books:
+    post:
+      consumes:
+      - application/json
+      description: create a new book.
+      parameters:
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Book'
+      summary: Create
+      tags:
+      - book
   /api/echo:
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: echo the request.
       parameters:
       - description: Request body

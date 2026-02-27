@@ -7,3 +7,7 @@ import (
 type HealthServiceInterface interface {
 	CheckHealth() model.Health
 }
+
+type BookServiceInterface interface {
+	Create(book *model.CreateBookRequest) (*model.Book, error)
+}

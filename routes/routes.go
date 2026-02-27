@@ -16,8 +16,8 @@ type RouteConfig struct {
 func SetupRoutes(config RouteConfig) {
 	healthService := services.NewHealthService(config.Infrastructure.Cache)
 
-	healthController := controllers.NewHealthController(healthService)
-	echoController := controllers.NewEchoController(healthService)
+	healthController := controllers.NewHealthController(healthService, config.Infrastructure.Logger)
+	echoController := controllers.NewEchoController(healthService, config.Infrastructure.Logger)
 
 	api := config.App.Group("/api")
 
@@ -27,6 +27,10 @@ func SetupRoutes(config RouteConfig) {
 	api.Get("/health", healthController.Check)
 	api.Get("/ping", healthController.Ping)
 	api.Post("/echo", echoController.Echo)
+
+	bookService := services.NewBookService(config.Infrastructure.Cache, config.Infrastructure.Logger)
+	bookController := controllers.NewBookController(bookService, config.Infrastructure.Logger)
+	api.Post("/books", bookController.Create)
 
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World! Welcome to the Fiber backend.")

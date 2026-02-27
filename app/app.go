@@ -18,7 +18,8 @@ func SetupApp() *fiber.App {
 	docs.SwaggerInfo.Host = appHost + ":" + port
 
 	infra := infrastructure.Infrastructure{
-		Cache: infrastructure.NewCache(),
+		Cache:  infrastructure.NewCache(),
+		Logger: infrastructure.NewLogger(),
 	}
 
 	app := fiber.New(fiber.Config{

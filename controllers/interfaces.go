@@ -10,3 +10,7 @@ type HealthControllerInterface interface {
 type EchoControllerInterface interface {
 	Echo(ctx *fiber.Ctx) error
 }
+
+type BookControllerInterface interface {
+	Create(ctx *fiber.Ctx) error
+}
