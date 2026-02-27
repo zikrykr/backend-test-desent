@@ -2,6 +2,10 @@ package main
 
 import (
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/zikrykr/backend-test-desent/config"
@@ -11,9 +15,9 @@ import (
 	"github.com/zikrykr/backend-test-desent/routes"
 )
 
-// @title Fiber Example API
+// @title Backend Test Desent API
 // @version 1.0
-// @description This is a sample swagger for Fiber
+// @description This is a swagger for Backend Test Desent
 // @BasePath /
 func main() {
 	config.LoadEnv()
@@ -27,7 +31,9 @@ func main() {
 		Cache: infrastructure.NewCache(),
 	}
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		DisableStartupMessage: true,
+	})
 
 	app.Use(middleware.SetupCors())
 
@@ -36,6 +42,21 @@ func main() {
 		Infrastructure: infra,
 	})
 
-	log.Println("Server is starting on " + appHost + ":" + port)
-	log.Fatal(app.Listen(appHost + ":" + port))
+	go func() {
+		log.Println("Server is starting on " + appHost + ":" + port)
+		if err := app.Listen(appHost + ":" + port); err != nil {
+			log.Fatalf("Server failed to start: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+	<-quit
+	log.Println("Gracefully shutting down server...")
+
+	if err := app.ShutdownWithTimeout(5 * time.Second); err != nil {
+		log.Fatalf("Server shutdown failed: %v", err)
+	}
+
+	log.Println("Server was successful shutdown.")
 }
