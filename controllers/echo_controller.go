@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 	"github.com/zikrykr/backend-test-desent/services"
 	"github.com/zikrykr/backend-test-desent/utils"
 )
@@ -27,6 +28,13 @@ func NewEchoController(healthService services.HealthServiceInterface) EchoContro
 // @Router /api/echo [post]
 func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 	reqBody := ctx.Body()
+
+	jsonB, err := utils.ParseJSON(reqBody)
+	if err != nil {
+		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body", err)
+	}
+
+	logrus.Debug(string(jsonB))
 
 	var data map[string]any
 	if err := utils.UnmarshalJSON(reqBody, &data); err != nil {
