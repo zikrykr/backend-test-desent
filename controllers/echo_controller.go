@@ -37,7 +37,7 @@ func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 	logrus.Debug(string(jsonB))
 
 	var data map[string]any
-	if err := utils.UnmarshalJSON(reqBody, &data); err != nil {
+	if err := utils.UnmarshalJSON(jsonB, &data); err != nil {
 		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body", err)
 	}
 
