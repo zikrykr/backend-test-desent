@@ -30,8 +30,7 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
+          schema: {}
       summary: Echo
       tags:
       - echo

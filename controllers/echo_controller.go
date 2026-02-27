@@ -23,7 +23,7 @@ func NewEchoController(healthService services.HealthServiceInterface) EchoContro
 // @Accept */*
 // @Produce json
 // @Param body body any true "Request body"
-// @Success 200 {object} model.Response
+// @Success 200 {object} any
 // @Router /api/echo [post]
 func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 	reqBody := ctx.Body()
@@ -33,5 +33,5 @@ func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body", err)
 	}
 
-	return utils.SuccessResponse(ctx, fiber.StatusOK, "success", data)
+	return ctx.Status(fiber.StatusOK).JSON(data)
 }
