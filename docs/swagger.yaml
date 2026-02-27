@@ -1,18 +1,11 @@
 basePath: /
 definitions:
-  model.Health:
-    properties:
-      message:
-        type: string
-      status:
-        type: string
-    type: object
   model.Response:
     properties:
       data: {}
       message:
         type: string
-      status:
+      success:
         type: boolean
     type: object
 info:
@@ -21,6 +14,27 @@ info:
   title: Backend Test Desent API
   version: "1.0"
 paths:
+  /api/echo:
+    post:
+      consumes:
+      - '*/*'
+      description: echo the request.
+      parameters:
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Echo
+      tags:
+      - echo
   /api/health:
     get:
       consumes:
@@ -32,7 +46,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Health'
+            $ref: '#/definitions/model.Response'
       summary: Check Health
       tags:
       - health

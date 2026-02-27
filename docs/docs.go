@@ -15,6 +15,38 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/echo": {
+            "post": {
+                "description": "echo the request.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "echo"
+                ],
+                "summary": "Echo",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {}
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/health": {
             "get": {
                 "description": "get the status of server.",
@@ -32,7 +64,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Health"
+                            "$ref": "#/definitions/model.Response"
                         }
                     }
                 }
@@ -63,17 +95,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.Health": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
         "model.Response": {
             "type": "object",
             "properties": {
@@ -81,7 +102,7 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
-                "status": {
+                "success": {
                     "type": "boolean"
                 }
             }

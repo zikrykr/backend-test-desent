@@ -17,6 +17,7 @@ func SetupRoutes(config RouteConfig) {
 	healthService := services.NewHealthService(config.Infrastructure.Cache)
 
 	healthController := controllers.NewHealthController(healthService)
+	echoController := controllers.NewEchoController(healthService)
 
 	api := config.App.Group("/api")
 
@@ -25,6 +26,8 @@ func SetupRoutes(config RouteConfig) {
 
 	api.Get("/health", healthController.Check)
 	api.Get("/ping", healthController.Ping)
+	api.Post("/echo", echoController.Echo)
+
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World! Welcome to the Fiber backend.")
 	})

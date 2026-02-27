@@ -14,3 +14,13 @@ func SuccessResponse(ctx *fiber.Ctx, httpStatus int, message string, data any) e
 
 	return ctx.Status(httpStatus).JSON(resp)
 }
+
+func ErrorResponse(ctx *fiber.Ctx, httpStatus int, message string, err error) error {
+	resp := model.Response{
+		Success: false,
+		Message: message,
+		Data:    err,
+	}
+
+	return ctx.Status(httpStatus).JSON(resp)
+}

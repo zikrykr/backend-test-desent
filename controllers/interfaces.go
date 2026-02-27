@@ -6,3 +6,7 @@ type HealthControllerInterface interface {
 	Check(ctx *fiber.Ctx) error
 	Ping(ctx *fiber.Ctx) error
 }
+
+type EchoControllerInterface interface {
+	Echo(ctx *fiber.Ctx) error
+}
