@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -59,6 +60,27 @@ func (c *Cache) Delete(key string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	delete(c.items, key)
+}
+
+func (c *Cache) GetAll(pattern string) (any, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	var result []any
+	for key, item := range c.items {
+		matched, err := filepath.Match(pattern, key)
+		if err != nil || !matched {
+			continue
+		}
+
+		if item.expiration > 0 && time.Now().UnixNano() > item.expiration {
+			continue
+		}
+
+		result = append(result, item.value)
+	}
+
+	return result, true
 }
 
 func (c *Cache) Flush() {

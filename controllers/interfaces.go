@@ -13,4 +13,6 @@ type EchoControllerInterface interface {
 
 type BookControllerInterface interface {
 	Create(ctx *fiber.Ctx) error
+	FindByID(ctx *fiber.Ctx) error
+	FindAll(ctx *fiber.Ctx) error
 }

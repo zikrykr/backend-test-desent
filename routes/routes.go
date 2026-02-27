@@ -30,7 +30,11 @@ func SetupRoutes(config RouteConfig) {
 
 	bookService := services.NewBookService(config.Infrastructure.Cache, config.Infrastructure.Logger)
 	bookController := controllers.NewBookController(bookService, config.Infrastructure.Logger)
-	api.Post("/books", bookController.Create)
+
+	books := api.Group("/books")
+	books.Post("/", bookController.Create)
+	books.Get("/", bookController.FindAll)
+	books.Get("/:id", bookController.FindByID)
 
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World! Welcome to the Fiber backend.")

@@ -10,4 +10,6 @@ type HealthServiceInterface interface {
 
 type BookServiceInterface interface {
 	Create(book *model.CreateBookRequest) (*model.Book, error)
+	FindByID(id string) (*model.Book, error)
+	FindAll() ([]*model.Book, error)
 }

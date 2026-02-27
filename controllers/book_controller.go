@@ -45,3 +45,43 @@ func (c *BookController) Create(ctx *fiber.Ctx) error {
 
 	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusCreated, bookResult)
 }
+
+// FindByID returns a simple find by id response.
+// @Summary FindByID
+// @Description find a book by id.
+// @Tags book
+// @Accept */*
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 200 {object} model.Book
+// @Router /api/books/{id} [get]
+func (c *BookController) FindByID(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	if id == "" {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "book id cannot be empty", nil)
+	}
+
+	bookResult, err := c.BookService.FindByID(id)
+	if err != nil {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to find book", err)
+	}
+
+	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
+}
+
+// FindAll returns a simple find all response.
+// @Summary FindAll
+// @Description find all books.
+// @Tags book
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []model.Book
+// @Router /api/books [get]
+func (c *BookController) FindAll(ctx *fiber.Ctx) error {
+	bookResult, err := c.BookService.FindAll()
+	if err != nil {
+		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to find books", err)
+	}
+
+	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
+}
