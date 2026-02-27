@@ -24,6 +24,7 @@ func SetupRoutes(config RouteConfig) {
 	config.App.Get("/swagger/*", swagger.HandlerDefault)
 
 	api.Get("/health", healthController.Check)
+	api.Get("/ping", healthController.Ping)
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World! Welcome to the Fiber backend.")
 	})

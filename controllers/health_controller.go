@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/zikrykr/backend-test-desent/services"
+	"github.com/zikrykr/backend-test-desent/utils"
 )
 
 type HealthController struct {
@@ -21,9 +22,21 @@ func NewHealthController(healthService services.HealthServiceInterface) HealthCo
 // @Tags health
 // @Accept */*
 // @Produce json
-// @Success 200 {object} model.Health
+// @Success 200 {object} model.Response
 // @Router /api/health [get]
 func (c *HealthController) Check(ctx *fiber.Ctx) error {
 	result := c.healthService.CheckHealth()
-	return ctx.Status(fiber.StatusOK).JSON(result)
+	return utils.SuccessResponse(ctx, fiber.StatusOK, "success", result)
+}
+
+// Ping returns a simple ping response.
+// @Summary Ping
+// @Description ping the server.
+// @Tags health
+// @Accept */*
+// @Produce json
+// @Success 200 {object} model.Response
+// @Router /api/ping [get]
+func (c *HealthController) Ping(ctx *fiber.Ctx) error {
+	return utils.SuccessResponse(ctx, fiber.StatusOK, "", nil)
 }

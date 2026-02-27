@@ -7,6 +7,14 @@ definitions:
       status:
         type: string
     type: object
+  model.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
 info:
   contact: {}
   description: This is a swagger for Backend Test Desent
@@ -26,6 +34,21 @@ paths:
           schema:
             $ref: '#/definitions/model.Health'
       summary: Check Health
+      tags:
+      - health
+  /api/ping:
+    get:
+      consumes:
+      - '*/*'
+      description: ping the server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Ping
       tags:
       - health
 swagger: "2.0"
