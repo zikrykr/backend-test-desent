@@ -1,19 +1,18 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/zikrykr/backend-test-desent/services"
 	"github.com/zikrykr/backend-test-desent/utils"
 )
 
 type EchoController struct {
-	healthService services.HealthServiceInterface
 }
 
 func NewEchoController(healthService services.HealthServiceInterface) EchoControllerInterface {
-	return &EchoController{
-		healthService: healthService,
-	}
+	return &EchoController{}
 }
 
 // Echo returns a simple echo response.
@@ -28,9 +27,13 @@ func NewEchoController(healthService services.HealthServiceInterface) EchoContro
 func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 	reqBody := ctx.Body()
 
-	var resp any
+	if len(reqBody) == 0 {
+		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "request body cannot be empty", nil)
+	}
+
+	var resp json.RawMessage
 	if err := utils.UnmarshalJSON(reqBody, &resp); err != nil {
-		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body", err)
+		return utils.ErrorResponse(ctx, fiber.StatusBadRequest, "failed to parse request body to valid JSON", err)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(resp)
