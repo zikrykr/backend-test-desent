@@ -1,7 +1,7 @@
 package model
 
 type Response struct {
-	Status  bool   `json:"status,omitempty"`
+	Success bool   `json:"success,omitempty"`
 	Message string `json:"message,omitempty"`
 	Data    any    `json:"data,omitempty"`
 }

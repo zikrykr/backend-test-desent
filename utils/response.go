@@ -7,7 +7,7 @@ import (
 
 func SuccessResponse(ctx *fiber.Ctx, httpStatus int, message string, data any) error {
 	resp := model.Response{
-		Status:  true,
+		Success: true,
 		Message: message,
 		Data:    data,
 	}
