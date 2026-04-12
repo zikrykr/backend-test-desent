@@ -21,7 +21,7 @@ func NewBookService(cache *infrastructure.Cache, logger *infrastructure.Logger) 
 	}
 }
 
-func (s *bookService) Create(req *model.CreateBookRequest) (*model.Book, error) {
+func (s *bookService) Create(req *model.CreateBookRequest) (*model.Book, *utils.ErrorObj) {
 	bookID := uuid.New().String()
 
 	bookResult := model.Book{
@@ -39,28 +39,28 @@ func (s *bookService) Create(req *model.CreateBookRequest) (*model.Book, error) 
 	return &bookResult, nil
 }
 
-func (s *bookService) FindByID(id string) (*model.Book, error) {
+func (s *bookService) FindByID(id string) (*model.Book, *utils.ErrorObj) {
 	cacheKey := fmt.Sprintf("books:%s", id)
 
 	book, found := s.cache.Get(cacheKey)
 	if !found {
-		return nil, fmt.Errorf("book not found")
+		return nil, utils.NotFoundError(s.logger, "book not found", nil)
 	}
 
 	b, err := utils.ConvertToPtr[model.Book](book)
-	if err == nil {
-		return b, nil
+	if err != nil {
+		return nil, utils.InternalServerError(s.logger, "failed to convert book", err)
 	}
 
 	s.logger.Info("Book found: " + id)
-	return nil, fmt.Errorf("book not found")
+	return b, nil
 }
 
-func (s *bookService) FindAll() ([]*model.Book, error) {
+func (s *bookService) FindAll() ([]*model.Book, *utils.ErrorObj) {
 	var bookResult []*model.Book
 	books, found := s.cache.GetAll("books:*")
 	if !found {
-		return nil, fmt.Errorf("books not found")
+		return nil, utils.NotFoundError(s.logger, "books not found", nil)
 	}
 
 	for _, book := range books.([]any) {
@@ -73,17 +73,17 @@ func (s *bookService) FindAll() ([]*model.Book, error) {
 	return bookResult, nil
 }
 
-func (s *bookService) Update(id string, req *model.UpdateBookRequest) (*model.Book, error) {
+func (s *bookService) Update(id string, req *model.UpdateBookRequest) (*model.Book, *utils.ErrorObj) {
 	cacheKey := fmt.Sprintf("books:%s", id)
 
 	book, found := s.cache.Get(cacheKey)
 	if !found {
-		return nil, fmt.Errorf("book not found")
+		return nil, utils.NotFoundError(s.logger, "book not found", nil)
 	}
 
 	b, err := utils.ConvertToPtr[model.Book](book)
 	if err != nil {
-		return nil, fmt.Errorf("book not found")
+		return nil, utils.NotFoundError(s.logger, "book not found", nil)
 	}
 
 	b.Title = req.Title
@@ -96,7 +96,7 @@ func (s *bookService) Update(id string, req *model.UpdateBookRequest) (*model.Bo
 	return b, nil
 }
 
-func (s *bookService) Delete(id string) error {
+func (s *bookService) Delete(id string) *utils.ErrorObj {
 	cacheKey := fmt.Sprintf("books:%s", id)
 
 	s.cache.Delete(cacheKey)

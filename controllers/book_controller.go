@@ -35,12 +35,12 @@ func NewBookController(
 func (c *BookController) Create(ctx *fiber.Ctx) error {
 	var req model.CreateBookRequest
 	if err := ctx.BodyParser(&req); err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "failed to parse request body to valid JSON", err)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "failed to parse request body to valid JSON", err))
 	}
 
 	bookResult, err := c.BookService.Create(&req)
 	if err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to create book", err)
+		return utils.ErrorResponse(ctx, c.Logger, err)
 	}
 
 	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusCreated, bookResult)
@@ -58,12 +58,12 @@ func (c *BookController) Create(ctx *fiber.Ctx) error {
 func (c *BookController) FindByID(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "book id cannot be empty", nil)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "book id cannot be empty", nil))
 	}
 
 	bookResult, err := c.BookService.FindByID(id)
 	if err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to find book", err)
+		return utils.ErrorResponse(ctx, c.Logger, err)
 	}
 
 	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
@@ -80,7 +80,7 @@ func (c *BookController) FindByID(ctx *fiber.Ctx) error {
 func (c *BookController) FindAll(ctx *fiber.Ctx) error {
 	bookResult, err := c.BookService.FindAll()
 	if err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to find books", err)
+		return utils.ErrorResponse(ctx, c.Logger, err)
 	}
 
 	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
@@ -99,17 +99,17 @@ func (c *BookController) FindAll(ctx *fiber.Ctx) error {
 func (c *BookController) Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "book id cannot be empty", nil)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "book id cannot be empty", nil))
 	}
 
 	var req model.UpdateBookRequest
 	if err := ctx.BodyParser(&req); err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "failed to parse request body to valid JSON", err)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "failed to parse request body to valid JSON", err))
 	}
 
 	bookResult, err := c.BookService.Update(id, &req)
 	if err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to update book", err)
+		return utils.ErrorResponse(ctx, c.Logger, err)
 	}
 
 	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, bookResult)
@@ -122,18 +122,18 @@ func (c *BookController) Update(ctx *fiber.Ctx) error {
 // @Accept */*
 // @Produce json
 // @Param id path string true "Book ID"
-// @Success 200 {object} model.Book
+// @Success 204 {object} model.Book
 // @Router /api/books/{id} [delete]
 func (c *BookController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "book id cannot be empty", nil)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "book id cannot be empty", nil))
 	}
 
 	err := c.BookService.Delete(id)
 	if err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusInternalServerError, "failed to delete book", err)
+		return utils.ErrorResponse(ctx, c.Logger, err)
 	}
 
-	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusOK, nil)
+	return utils.SuccessPlainResponse(ctx, c.Logger, fiber.StatusNoContent, nil)
 }

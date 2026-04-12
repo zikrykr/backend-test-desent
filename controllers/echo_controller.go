@@ -35,12 +35,12 @@ func (c *EchoController) Echo(ctx *fiber.Ctx) error {
 	reqBody := ctx.Body()
 
 	if len(reqBody) == 0 {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "request body cannot be empty", nil)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "request body cannot be empty", nil))
 	}
 
 	var resp json.RawMessage
 	if err := utils.UnmarshalJSON(reqBody, &resp); err != nil {
-		return utils.ErrorResponse(ctx, c.Logger, fiber.StatusBadRequest, "failed to parse request body to valid JSON", err)
+		return utils.ErrorResponse(ctx, c.Logger, utils.BadRequestError(c.Logger, "failed to parse request body to valid JSON", err))
 	}
 
 	ctx.Set("Content-Type", "application/json")

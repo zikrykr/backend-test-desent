@@ -20,16 +20,21 @@ func SuccessResponse(ctx *fiber.Ctx, logger *infrastructure.Logger, httpStatus i
 func SuccessPlainResponse(ctx *fiber.Ctx, logger *infrastructure.Logger, httpStatus int, data any) error {
 	logger.Info("Success plain response")
 	ctx.Set("Content-Type", "application/json")
+
+	if data == nil {
+		return ctx.Status(httpStatus).JSON(fiber.Map{})
+	}
+
 	return ctx.Status(httpStatus).JSON(data)
 }
 
-func ErrorResponse(ctx *fiber.Ctx, logger *infrastructure.Logger, httpStatus int, message string, err error) error {
+func ErrorResponse(ctx *fiber.Ctx, logger *infrastructure.Logger, errObj *ErrorObj) error {
 	resp := model.Response{
 		Success: false,
-		Message: message,
-		Data:    err,
+		Message: errObj.Message,
+		Data:    errObj,
 	}
 
-	logger.Error("Error response: " + message)
-	return ctx.Status(httpStatus).JSON(resp)
+	logger.Error("Error response: "+errObj.Message, errObj.Error)
+	return ctx.Status(errObj.HTTPStatus).JSON(resp)
 }

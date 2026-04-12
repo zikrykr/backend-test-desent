@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/zikrykr/backend-test-desent/config"
 	docs "github.com/zikrykr/backend-test-desent/docs"
 	"github.com/zikrykr/backend-test-desent/infrastructure"
@@ -26,6 +27,7 @@ func SetupApp() *fiber.App {
 		DisableStartupMessage: true,
 	})
 
+	app.Use(recover.New())
 	app.Use(middleware.SetupCors())
 
 	routes.SetupRoutes(routes.RouteConfig{

@@ -18,6 +18,8 @@ func (l *Logger) Info(message string) {
 	l.logger.Info(message)
 }
 
-func (l *Logger) Error(message string) {
-	l.logger.Error(message)
+func (l *Logger) Error(message string, err error) {
+	l.logger.WithFields(logrus.Fields{
+		"error": err,
+	}).Error(message)
 }
